@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from "expo-font";
-/* import Home from "./screens/Home"; */
+import Home from "./app/home";
 import InvitationCode from "./app/invitation_code";
 import RegisterEmpty from "./app/register_empty";
 /* import PhoneNumberEmpty from "./screens/PhoneNumberEmpty";
@@ -57,6 +57,11 @@ const App = () => {
             <Stack.Screen 
               name="login"
               component={Login}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen 
+              name="home"
+              component={Home}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

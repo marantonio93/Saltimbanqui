@@ -28,6 +28,7 @@ export const FontFamily = {
     primaryBase: "#5766c7",
     darkGrey: "#acadb9",
     greyscale400: "#9ca3af",
+    colorMediumslateblue_50: "#8A97FA",
     colorMediumslateblue_100: "#5568f7",
     colorMediumslateblue_200: "#455af7",
     black: "#323142",
@@ -52,6 +53,7 @@ export const FontFamily = {
     p_mini: 15,
     p_lgi: 19,
     p_21xl: 40,
+    p_xs: 12,
   };
   /* border radiuses */
   export const Border = {

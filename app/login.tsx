@@ -44,7 +44,7 @@ const Login = () => {
               password = {true}
               />
             <Bluebutton title = "Login"
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.navigate("home")}
             />
         </View>
       </ScrollView>
