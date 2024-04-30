@@ -14,9 +14,11 @@ interface InputProps {
   iconName: ImageSourcePropType;
   placeholderText: string;
   password: boolean;
+  value: string;
+  onChangeText: (text: string) => void;
 }
 
-const Input: React.FC<InputProps> = ({iconName, placeholderText,password, ...props }) => {
+const Input: React.FC<InputProps> = ({iconName, placeholderText,password,  ...props }) => {
   const [hidePassword, setHidePassword] = React.useState(password);
   return (
     <View style={styles.input}>
@@ -29,10 +31,10 @@ const Input: React.FC<InputProps> = ({iconName, placeholderText,password, ...pro
                 style={[styles.textInput, styles.textInputTypo]}
                 placeholder={placeholderText}
                 placeholderTextColor="#c2c3cb"
-                secureTextEntry={hidePassword}
+                secureTextEntry={password && hidePassword}
                 {... props}/> 
                 {
-                  password && <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
+                  password &&  <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
                       <Image
                         style= {styles.iconEye}
                         contentFit="cover"

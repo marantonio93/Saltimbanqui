@@ -14,6 +14,9 @@ import { StackNavigationProp  } from "@react-navigation/stack";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { FontSize, FontFamily, Color, Padding, Border } from "../GlobalStyles";
 import { setStatusBarBackgroundColor } from "expo-status-bar";
+import { Event } from "../components/flyer";
+import api from "./api"; // Importa api.tsx desde la ruta correcta
+
 
 const ProfilePhoto = require('../assets/images/photo.png');
 
@@ -23,7 +26,24 @@ const Home = () => {
     const [buttonColorBachata, setButtonColorBachata] = React.useState(false);
     const [buttonColorKizomba, setButtonColorKizomba] = React.useState(false);
     const [buttonColorTimba, setButtonColorTimba] = React.useState(false);
- 
+
+    const [events, setEvents] = React.useState<Event[]>([]);
+  
+    React.useEffect(() => {
+      // Realiza una solicitud GET para obtener eventos desde el backend
+      const fetchEvents = async () => {
+        try {
+          const response = await api.get("/events");
+          setEvents(response.data); // Actualiza el estado con los eventos recibidos del backend
+        } catch (error) {
+          console.error("Error fetching events:", error);
+        }
+      };
+
+      fetchEvents(); // Llama a la función para obtener eventos cuando el componente se monte
+  }, []); // El segundo argumento [] asegura que este efecto se ejecute solo una vez al montar el componente
+
+
     const handlePress = (button: 'Salsa' | 'Bachata' | 'Kizomba' | 'Timba') => {
       switch (button) {
         case 'Salsa':
@@ -120,9 +140,11 @@ const Home = () => {
           </ScrollView>
           
           <ScrollView scrollEventThrottle={16} showsVerticalScrollIndicator={false}>
+          {events.map(event =>(
             <View style={styles.flyerViewContainer}>
             <TouchableOpacity
-              onPress= { () => navigation.navigate("Flyer")}
+              key={event.id}
+              onPress= { () => navigation.navigate("Flyer", {eventId: event.id})}
               activeOpacity={1}
               style={ styles.flyerContainer }>
 
@@ -136,10 +158,10 @@ const Home = () => {
 
                 <View style= {styles.flyerDataContainer }>
                   <View style = {styles.flyerPlaceTimeContainer}>
-                    <Text style = {styles.flyerTime}> sabado 6 abril </Text>
+                    <Text style = {styles.flyerTime}> {event.date} </Text>
                   </View>
                   <View>
-                    <Text style = {styles.flyerTitle}> titulo 1
+                    <Text style = {styles.flyerTitle}> {event.title}
                     </Text>
                   </View>
                   <View style={styles.flyerInfo}>
@@ -162,7 +184,7 @@ const Home = () => {
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
-              onPress= { () => navigation.navigate("Flyer")}
+              onPress= { () => navigation.navigate("Flyer", {eventId: event.id})}
               activeOpacity={1}
               style={ styles.flyerContainer }>
 
@@ -176,10 +198,10 @@ const Home = () => {
 
                 <View style= {styles.flyerDataContainer }>
                   <View style = {styles.flyerPlaceTimeContainer}>
-                    <Text style = {styles.flyerTime}> domingo 7 abril </Text>
+                    <Text style = {styles.flyerTime}> {event.date} </Text>
                   </View>
                   <View>
-                    <Text style = {styles.flyerTitle}> titulo 2
+                    <Text style = {styles.flyerTitle}> {event.title}
                     </Text>
                   </View>
                   <View style={styles.flyerInfo}>
@@ -202,7 +224,7 @@ const Home = () => {
                 </View>
               </TouchableOpacity>
             </View>
-
+            ))}
             </ScrollView>
         </ScrollView>
       </View>

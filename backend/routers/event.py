@@ -12,7 +12,7 @@ from schemas.event import Event
 event_router = APIRouter()
 
 
-@event_router.get('/events', tags = ['events'], response_model= List[Event], status_code=200, dependencies=[Depends(JWTBearer())] )
+@event_router.get('/events', tags = ['events'], response_model= List[Event], status_code=200 )
 def get_events() -> List[Event]:
     db = Session()
     result = EventService(db).get_events()

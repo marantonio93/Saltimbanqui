@@ -1,4 +1,5 @@
 import * as React from "react";
+import api from './app/api';
 import { NavigationContainer } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native";
 import { SafeAreaProvider } from 'react-native-safe-area-context';

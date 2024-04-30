@@ -5,20 +5,40 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  Dimensions,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Image } from "expo-image";
-import { Stack } from 'expo-router';
 import { StackNavigationProp  } from "@react-navigation/stack";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { FontSize, FontFamily, Color, Padding, Border } from "../GlobalStyles";
+import api from "./api";
 
 import Input from "../components/fill_in";
 import Bluebutton from "../components/button";
 
 const Login = () => {
   const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  
+  const handleLogin = async () => {
+    console.log("Email enviado:", email);
+    console.log("Contraseña enviada:", password);
+    try {
+      const response = await api.post("/login/", {
+        email: email,
+        password: password,
+      });
+      const token = response.data; // Suponiendo que el backend devuelve solo el token
+      // Aquí puedes guardar el token en el almacenamiento local o en el contexto de la aplicación
+      Alert.alert("Login exitoso");
+      // Redireccionar al usuario a la pantalla principal
+      navigation.navigate("home");
+    } catch (error) {
+      Alert.alert("Error", "Credenciales incorrectas");
+    }
+  };
 
   return (
     <SafeAreaProvider style={styles.container}>
@@ -38,13 +58,17 @@ const Login = () => {
             <Input iconName={require("../assets/email_icon.png")}
               placeholderText="Enter Your Email"
               password = {false}
+              value = {email}
+              onChangeText = {setEmail}
               />
             <Input iconName={require("../assets/lock_icon.png")}
               placeholderText="Password"
               password = {true}
+              value={password}
+              onChangeText={setPassword}
               />
             <Bluebutton title = "Login"
-            onPress={() => navigation.navigate("home")}
+            onPress={handleLogin}
             />
         </View>
       </ScrollView>
