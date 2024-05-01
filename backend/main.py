@@ -12,6 +12,9 @@ app.version = "0.0.1"
 
 origins = [
     "http://localhost:8081",
+    "exp://192.168.1.253:8081",
+    "http://192.168.1.253:8081",
+    "http://192.168.1.182:8081",
 ]
 
 app.add_middleware(

@@ -16,6 +16,7 @@ import VerificationEmpty from "./screens/VerificationEmpty"; */
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Text, Pressable, TouchableOpacity } from "react-native";
 import Login from "./app/login";
+import FilterPage from "./app/filter";
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,11 @@ const App = () => {
       <NavigationContainer>
         {hideSplashScreen ? (
           <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen
+              name="filter"
+              component={FilterPage}
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="invitation_code"
               component={InvitationCode}

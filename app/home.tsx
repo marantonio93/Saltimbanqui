@@ -5,30 +5,25 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  Dimensions,
   ScrollView,
-  Button,
 } from "react-native";
 import { Image } from "expo-image";
 import { StackNavigationProp  } from "@react-navigation/stack";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { FontSize, FontFamily, Color, Padding, Border } from "../GlobalStyles";
-import { setStatusBarBackgroundColor } from "expo-status-bar";
-import { Event } from "../components/flyer";
-import api from "./api"; // Importa api.tsx desde la ruta correcta
+import EventCard, {Event} from '../components/flyer';
+import DanceFilter from '../components/dance_filter';
+import api from "./api";
 
 
 const ProfilePhoto = require('../assets/images/photo.png');
 
 const Home = () => {
     const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
-    const [buttonColorSalsa, setButtonColorSalsa] = React.useState(false);
-    const [buttonColorBachata, setButtonColorBachata] = React.useState(false);
-    const [buttonColorKizomba, setButtonColorKizomba] = React.useState(false);
-    const [buttonColorTimba, setButtonColorTimba] = React.useState(false);
-
+    
+    // Inicializa events como un array vacío
     const [events, setEvents] = React.useState<Event[]>([]);
-  
+
     React.useEffect(() => {
       // Realiza una solicitud GET para obtener eventos desde el backend
       const fetchEvents = async () => {
@@ -39,31 +34,10 @@ const Home = () => {
           console.error("Error fetching events:", error);
         }
       };
-
+  
       fetchEvents(); // Llama a la función para obtener eventos cuando el componente se monte
-  }, []); // El segundo argumento [] asegura que este efecto se ejecute solo una vez al montar el componente
+    }, []); // El segundo argumento [] asegura que este efecto se ejecute solo una vez al montar el componente    
 
-
-    const handlePress = (button: 'Salsa' | 'Bachata' | 'Kizomba' | 'Timba') => {
-      switch (button) {
-        case 'Salsa':
-          setButtonColorSalsa(!buttonColorSalsa);
-          break;
-        case 'Bachata':
-          setButtonColorBachata(!buttonColorBachata);
-          break;
-        case 'Kizomba':
-          setButtonColorKizomba(!buttonColorKizomba);
-          break;
-        case 'Timba':
-          setButtonColorTimba(!buttonColorTimba);
-          break;
-        default:
-          break;
-      }
-    };
-
-    
   return (
     <SafeAreaProvider style={styles.container}>
       <View style= {styles.topbar}>
@@ -98,134 +72,24 @@ const Home = () => {
         </View>
       </View>
       <View style={styles.linemenu}></View>
+      
       <View style={styles.eventMenu}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          
-          <ScrollView scrollEventThrottle={16} horizontal={true} showsHorizontalScrollIndicator={false}> 
+        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+          <ScrollView scrollEventThrottle={16} horizontal={true} showsHorizontalScrollIndicator={false}>
             <View style={styles.danceFilter} >
-              <TouchableOpacity
-              onPress= { () =>handlePress('Salsa')}
-              activeOpacity={0.2}
-              style={buttonColorSalsa === false ? styles.registerButtonOFF : styles.registerButtonON}>
-                <Text style={styles.next}>Salsa Cubana</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.danceFilter} >
-              <TouchableOpacity
-              onPress={() => handlePress('Bachata')}
-              activeOpacity={0.2} 
-              style={buttonColorBachata === false ? styles.registerButtonOFF : styles.registerButtonON}>
-                <Text style={styles.next}>Bachata</Text>
-              </TouchableOpacity>
-            </View>
-            
-            <View style={styles.danceFilter} >
-              <TouchableOpacity
-              onPress={() => handlePress('Kizomba')}
-              activeOpacity={0.2} 
-              style={buttonColorKizomba === false ? styles.registerButtonOFF : styles.registerButtonON}>
-                <Text style={styles.next}>Kizomba</Text>
-              </TouchableOpacity>
-            </View>
-              
-            <View style={styles.danceFilter} >
-              <TouchableOpacity
-              onPress={() => handlePress('Timba')}
-              activeOpacity={0.2} 
-              style={buttonColorTimba === false ? styles.registerButtonOFF : styles.registerButtonON}>
-                <Text style={styles.next}>Timba</Text>
-              </TouchableOpacity>
+            <DanceFilter danceType="Salsa" />
+            <DanceFilter danceType="Bachata" />
+            <DanceFilter danceType="Kizomba" />
+            <DanceFilter danceType="Timba" />
             </View>
           </ScrollView>
-          
           <ScrollView scrollEventThrottle={16} showsVerticalScrollIndicator={false}>
-          {events.map(event =>(
-            <View style={styles.flyerViewContainer}>
-            <TouchableOpacity
-              key={event.id}
-              onPress= { () => navigation.navigate("Flyer", {eventId: event.id})}
-              activeOpacity={1}
-              style={ styles.flyerContainer }>
-
-                <View style ={ styles.imageFlyerContainer }>
-                  <Image
-                  style={styles.flyerImage}
-                  contentFit="cover"
-                  source={require("../assets/images/flyersalsaricafreitagneu1200px.jpeg")}>
-                  </Image>
-                </View>
-
-                <View style= {styles.flyerDataContainer }>
-                  <View style = {styles.flyerPlaceTimeContainer}>
-                    <Text style = {styles.flyerTime}> {event.date} </Text>
-                  </View>
-                  <View>
-                    <Text style = {styles.flyerTitle}> {event.title}
-                    </Text>
-                  </View>
-                  <View style={styles.flyerInfo}>
-                    <View style={styles.flyerInfo}>
-                      <Image
-                        style={styles.flyerMapIcon}
-                        contentFit="cover"
-                        source={require("../assets/map_in.png")}>
-                      </Image>
-                      <Text style = {styles.flyerPlace}>
-                          Madrid
-                      </Text>
-                    </View>
-                    <View style={styles.flyerPrice}>
-                      <Text>
-                          15€
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-              onPress= { () => navigation.navigate("Flyer", {eventId: event.id})}
-              activeOpacity={1}
-              style={ styles.flyerContainer }>
-
-                <View style ={ styles.imageFlyerContainer }>
-                  <Image
-                  style={styles.flyerImage}
-                  contentFit="cover"
-                  source={require("../assets/images/flyersalsaricafreitagneu1200px.jpeg")}>
-                  </Image>
-                </View>
-
-                <View style= {styles.flyerDataContainer }>
-                  <View style = {styles.flyerPlaceTimeContainer}>
-                    <Text style = {styles.flyerTime}> {event.date} </Text>
-                  </View>
-                  <View>
-                    <Text style = {styles.flyerTitle}> {event.title}
-                    </Text>
-                  </View>
-                  <View style={styles.flyerInfo}>
-                    <View style={styles.flyerInfo}>
-                      <Image
-                        style={styles.flyerMapIcon}
-                        contentFit="cover"
-                        source={require("../assets/map_in.png")}>
-                      </Image>
-                      <Text style = {styles.flyerPlace}>
-                          Madrid
-                      </Text>
-                    </View>
-                    <View style={styles.flyerPrice}>
-                      <Text>
-                          15€
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableOpacity>
+          {events.map((event: Event) =>(
+            <View style={styles.flyerViewContainer} key={event.id}>
+              <EventCard event={event} />
             </View>
             ))}
-            </ScrollView>
+          </ScrollView>
         </ScrollView>
       </View>
       </SafeAreaProvider>
@@ -319,39 +183,11 @@ const Home = () => {
       marginLeft: 5,
     },
     danceFilter: {
-      paddingTop: 10,
-      paddingHorizontal: 10,
-
-    },
-    registerButtonOFF: {
-      borderRadius: Border.br_sm,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      borderColor: "white",
-      borderWidth: 0.5,
-      backgroundColor: Color.colorMediumslateblue_50,
+      flexDirection: "row",
       alignItems: "center",
-      justifyContent: "center",
-      marginVertical: 10,
-      width: 100,
-    },
-    registerButtonON: {
-    borderRadius: Border.br_sm,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderColor: Color.colorMediumslateblue_200,
-    backgroundColor: Color.colorMediumslateblue_200,
-    alignItems: "center",
-    justifyContent: "center",
-    marginVertical: 10,
-    width: 100,
-    },
-    next: {
-        color: Color.bG,
-        textAlign: "left",
-        fontSize: FontSize.size_xs,
-        letterSpacing: -0.3,
-        fontWeight: "500",
+      marginTop: 5,
+      marginBottom: 5,
+      paddingTop: 5,
     },
     flyerViewContainer: {
       paddingHorizontal: 10,
@@ -362,57 +198,7 @@ const Home = () => {
       borderRadius: Border.br_base, 
       margin: 5, 
     }, 
-    imageFlyerContainer: {
-      flex: 1,
-    },
-    flyerImage: {
-      borderTopRightRadius: Border.br_base, 
-      borderTopLeftRadius: Border.br_base, 
-      height: 300,
-      maxWidth: "100%",
-      width: "100%",
-    },
-    flyerDataContainer:{
-      flex: 1/4,
-      padding: Padding.p_xs,
-    },
-    flyerPlaceTimeContainer:{
-      flexDirection: "row",
-      paddingTop: 3,
-    },
-    flyerTime:{
-      textAlign: "left",
-      lineHeight: 18,
-      fontSize: FontSize.size_xs,
-      color: Color.greyscale400,
-      fontFamily: FontFamily.interBlack,
-    },
-    flyerTitle: {
-      alignSelf: "stretch",
-      marginTop: 4,
-      color: Color.greyscale900,
-      fontFamily: FontFamily.interBlack,
-    },
-    flyerMapIcon: {
-      height: 12.32,
-      width: 10.67,
-    },
-    flyerInfo: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginTop: 5,
-    },
-    flyerPrice:{
-      justifyContent: "flex-end",
-      alignSelf: "flex-end",
-    },
-    flyerPlace: {
-      marginLeft: 3,
-    },
-
+    
   });
   
-
-
   export default Home;

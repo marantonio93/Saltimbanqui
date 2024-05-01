@@ -22,7 +22,7 @@ const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   
-  const handleLogin = async () => {
+/*   const handleLogin = async () => {
     console.log("Email enviado:", email);
     console.log("Contraseña enviada:", password);
     try {
@@ -38,7 +38,7 @@ const Login = () => {
     } catch (error) {
       Alert.alert("Error", "Credenciales incorrectas");
     }
-  };
+  }; */
 
   return (
     <SafeAreaProvider style={styles.container}>
@@ -68,7 +68,7 @@ const Login = () => {
               onChangeText={setPassword}
               />
             <Bluebutton title = "Login"
-            onPress={handleLogin}
+            onPress={() => navigation.navigate("home")}
             />
         </View>
       </ScrollView>
