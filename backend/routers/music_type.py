@@ -3,7 +3,7 @@ from fastapi import Path, Query
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from typing import List
-from models.music_type import MusicType as MusicTypeModel
+from models.event import MusicType as MusicTypeModel
 from schemas.music_type import MusicType
 from services.music_type import MusicTypeService
 from config.database import Session

@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import List, Optional
 from datetime import date
 from enum import Enum
-from models.event import Event as EventModel
+from schemas.music_type import MusicType
 
 class PriceType(str, Enum):
     FREE = "FREE"
@@ -20,7 +20,7 @@ class Event(BaseModel):
     organizer: Optional [str]
     price_type: PriceType
     price_amount: Optional[float]
-
+    music: Optional[List[MusicType]] = []
 
     class Config:
         json_schema_extra = {
@@ -35,3 +35,7 @@ class Event(BaseModel):
                 "price_type": "ADMISSION",
                 "price_amount": 10.0            }
         }
+
+        orm_mode = True
+
+

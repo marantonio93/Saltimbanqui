@@ -4,7 +4,9 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from typing import List
 from models.event import Event as EventModel
+from models.event import MusicType as MusicTypeModel
 from schemas.event import Event
+from schemas.music_type import MusicType
 from services.event import EventService
 from config.database import Session
 
@@ -42,7 +44,18 @@ def create_event( event: Event) -> dict:
     return JSONResponse(status_code=201, content={"message": "Se ha registrado el evento"})
 
 
-@event_router.put('/events/{id}', tags = ['events'], response_model=dict, status_code=200)
+@event_router.put('/events/{id}', tags=['events'], response_model=dict, status_code=201)
+def create_event_with_musicTypes(eventid: int, musicid: int):
+    db = Session()
+    result = EventService(db).get_event(eventid)
+    if not result:
+        return JSONResponse(status_code = 404, content={'message': 'No encontrado'})
+    EventService(db).create_event_with_musicTypes(eventid, musicid)
+    db.commit() 
+    return JSONResponse(status_code=200, content={"message": "Se ha modificado el evento"})
+
+
+""" @event_router.put('/events/{id}', tags = ['eventsConAlma'], response_model=dict, status_code=200)
 def update_event(id: int, event: Event) -> dict:
     db = Session()
     result = EventService(db).get_event(id)
@@ -50,7 +63,7 @@ def update_event(id: int, event: Event) -> dict:
         return JSONResponse(status_code = 404, content={'message': 'No encontrado'})
     EventService(db).update_event(id, event)
     db.commit() 
-    return JSONResponse(status_code=200, content={"message": "Se ha modificado el evento"})
+    return JSONResponse(status_code=200, content={"message": "Se ha modificado el evento"}) """
 
 @event_router.delete('/events/{id}', tags=['events'], response_model=dict, status_code=200)
 def delete_event(id: int) -> dict:

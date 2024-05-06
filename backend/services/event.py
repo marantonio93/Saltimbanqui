@@ -1,8 +1,8 @@
 from models.event import Event as EventModel
-from models.music_type import MusicType as MusicTypeModel
+from models.event import MusicType as MusicTypeModel
 from schemas.event import Event
+from schemas.music_type import MusicType
 from sqlalchemy import or_
-
 
 class EventService():
 
@@ -25,6 +25,14 @@ class EventService():
         new_event = EventModel(**event.model_dump())
         self.db.add(new_event)
         self.db.commit()
+        return
+    
+    def create_event_with_musicTypes(self, eventid: int, musicid: int):
+        eventresult = self.db.query(EventModel).filter(EventModel.id == eventid).first()
+        musicresult = self.db.query(MusicTypeModel).filter(MusicTypeModel.id == musicid).first()
+        if eventresult and musicresult:
+            eventresult.music.append(musicresult)
+            self.db.commit()
         return
     
     def update_event(self, id: int, data: Event):

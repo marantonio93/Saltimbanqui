@@ -1,6 +1,6 @@
-from models.music_type import MusicType as MusicTypeModel
+from models.event import MusicType as MusicTypeModel
+from models.event import MusicType as MusicTypeModel
 from schemas.music_type import MusicType
-from typing import List
 
 
 class MusicTypeService():
@@ -33,7 +33,6 @@ class MusicTypeService():
         self.db.commit()
         return
 
-"""     def delete_music_type_by_name(self, name: str) -> None:
+    def delete_music_type_by_name(self, name: str) -> None:
         self.db.query(MusicTypeModel).filter(MusicTypeModel.name == name).delete()
         self.db.commit()
- """
