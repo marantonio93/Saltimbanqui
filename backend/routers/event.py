@@ -1,13 +1,13 @@
 from fastapi import APIRouter
-from fastapi import Depends, Path, Query
+from fastapi import Path, Query
 from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from typing import List
+from models.event import Event as EventModel
+from schemas.event import Event
 from services.event import EventService
 from config.database import Session
-from models.event import Event as EventModel
-from fastapi.encoders import jsonable_encoder
-from middlewares.jwt_bearer import JWTBearer
-from schemas.event import Event
+
 
 event_router = APIRouter()
 
@@ -19,26 +19,28 @@ def get_events() -> List[Event]:
     return JSONResponse(status_code=200, content=jsonable_encoder(result))
 
 @event_router.get('/events/{id}', tags = ['events'], response_model=Event)
-def get_event(id: int = Path(ge=1, le=2000)) -> Event:
+def get_event(id: int) -> Event:
     db = Session()
     result = EventService(db).get_event(id)
     if not result:
         return JSONResponse(status_code = 404, content={'message': 'No encontrado'})
     return JSONResponse(status_code=200, content=jsonable_encoder(result))
 
+
 @event_router.get('/events/', tags=['events'], response_model= List[Event])
-def get_events_by_city(city: str = Query(min_length=2)) -> List[Event]:
+def get_events_by_city(city: str) -> Event:
     db = Session()
     result = EventService(db).get_event_by_city(city)
     if not result:
         return JSONResponse(status_code = 404, content={'message': 'Ningún evento en esta ciudad'})
     return JSONResponse(content=[jsonable_encoder(result)])
 
-@event_router.post('/events', tags=['events'], response_model=dict,status_code=201)
-def create_event( event: Event ) -> dict:
+@event_router.post('/events', tags=['events'], response_model=dict, status_code=201)
+def create_event( event: Event) -> dict:
     db = Session()
     EventService(db).create_event(event)
     return JSONResponse(status_code=201, content={"message": "Se ha registrado el evento"})
+
 
 @event_router.put('/events/{id}', tags = ['events'], response_model=dict, status_code=200)
 def update_event(id: int, event: Event) -> dict:

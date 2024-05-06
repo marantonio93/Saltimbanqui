@@ -1,5 +1,7 @@
 from models.event import Event as EventModel
+from models.music_type import MusicType as MusicTypeModel
 from schemas.event import Event
+from sqlalchemy import or_
 
 
 class EventService():
@@ -31,9 +33,12 @@ class EventService():
         event.description = data.description
         event.date = data.date
         event.place = data.place
+        event.street = data.street
         event.city = data.city
         event.organizer = data.organizer
-        event.price = data.price
+        event.price_type = data.price_type
+        event.price_amount = data.price_amount
+
         self.db.commit()
         return
     
