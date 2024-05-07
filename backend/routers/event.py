@@ -13,7 +13,6 @@ from config.database import Session
 
 event_router = APIRouter()
 
-
 @event_router.get('/events', tags = ['events'], response_model= List[Event], status_code=200 )
 def get_events() -> List[Event]:
     db = Session()
@@ -28,7 +27,6 @@ def get_event(id: int) -> Event:
         return JSONResponse(status_code = 404, content={'message': 'No encontrado'})
     return JSONResponse(status_code=200, content=jsonable_encoder(result))
 
-
 @event_router.get('/events/', tags=['events'], response_model= List[Event])
 def get_events_by_city(city: str) -> Event:
     db = Session()
@@ -38,24 +36,13 @@ def get_events_by_city(city: str) -> Event:
     return JSONResponse(content=[jsonable_encoder(result)])
 
 @event_router.post('/events', tags=['events'], response_model=dict, status_code=201)
-def create_event( event: Event) -> dict:
+def create_event( event: Event, music_ids: list[int]) -> dict:        
     db = Session()
-    EventService(db).create_event(event)
+    EventService(db).create_event(event, music_ids)
     return JSONResponse(status_code=201, content={"message": "Se ha registrado el evento"})
 
 
-@event_router.put('/events/{id}', tags=['events'], response_model=dict, status_code=201)
-def create_event_with_musicTypes(eventid: int, musicid: int):
-    db = Session()
-    result = EventService(db).get_event(eventid)
-    if not result:
-        return JSONResponse(status_code = 404, content={'message': 'No encontrado'})
-    EventService(db).create_event_with_musicTypes(eventid, musicid)
-    db.commit() 
-    return JSONResponse(status_code=200, content={"message": "Se ha modificado el evento"})
-
-
-""" @event_router.put('/events/{id}', tags = ['eventsConAlma'], response_model=dict, status_code=200)
+@event_router.put('/events/{id}', tags = ['eventsConAlma'], response_model=dict, status_code=200)
 def update_event(id: int, event: Event) -> dict:
     db = Session()
     result = EventService(db).get_event(id)
@@ -63,7 +50,8 @@ def update_event(id: int, event: Event) -> dict:
         return JSONResponse(status_code = 404, content={'message': 'No encontrado'})
     EventService(db).update_event(id, event)
     db.commit() 
-    return JSONResponse(status_code=200, content={"message": "Se ha modificado el evento"}) """
+    return JSONResponse(status_code=200, content={"message": "Se ha modificado el evento"})
+
 
 @event_router.delete('/events/{id}', tags=['events'], response_model=dict, status_code=200)
 def delete_event(id: int) -> dict:

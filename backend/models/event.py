@@ -30,9 +30,8 @@ class Event (Base):
     city = Column (String)
     organizer = Column (String)
     price_type = Column (Enum(PriceType))
-    price_amount = Column (Float)
-     
-    music = relationship("MusicType", secondary = event_musicType_table, back_populates="events" )
+    price_amount = Column (Float)  
+    music = relationship("MusicType", secondary = event_musicType_table, back_populates="events", lazy="joined" )
 
 class MusicType(Base):
     __tablename__ = "music_types"

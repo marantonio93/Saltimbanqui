@@ -21,19 +21,19 @@ class EventService():
         result = self.db.query(EventModel).filter(EventModel.city == city).all()
         return result
     
-    def create_event(self, event: Event):
+    def create_event(self, event: Event, music_ids: list):
         new_event = EventModel(**event.model_dump())
+        musicresults = []
+        for music_id in music_ids:
+            musicresult = self.db.query(MusicTypeModel).filter(MusicTypeModel.id == music_id).first()
+            if musicresult:
+                musicresults.append(musicresult)
+        new_event.music = musicresults
         self.db.add(new_event)
         self.db.commit()
+        self.db.refresh()
         return
     
-    def create_event_with_musicTypes(self, eventid: int, musicid: int):
-        eventresult = self.db.query(EventModel).filter(EventModel.id == eventid).first()
-        musicresult = self.db.query(MusicTypeModel).filter(MusicTypeModel.id == musicid).first()
-        if eventresult and musicresult:
-            eventresult.music.append(musicresult)
-            self.db.commit()
-        return
     
     def update_event(self, id: int, data: Event):
         event = self.db.query(EventModel).filter(EventModel.id == id).first()

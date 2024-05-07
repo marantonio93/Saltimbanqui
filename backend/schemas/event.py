@@ -33,7 +33,7 @@ class Event(BaseModel):
                 "city": "Ciudad",
                 "organizer": "Tu",
                 "price_type": "ADMISSION",
-                "price_amount": 10.0            }
+                "price_amount": 10.0                }
         }
 
         orm_mode = True
