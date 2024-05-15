@@ -39,9 +39,10 @@ const InvitationCode = () => {
         <View style={styles.invitationCode}>
           <Text style={styles.wereYouInvited}>Were you invited?</Text>
           <Input iconName={require("../assets/lock_icon.png")}
-              placeholderText="Invitation code!!!!"
-              password = {false}
-          />
+          placeholderText="Invitation code!!!!"
+          password={false} value={""} onChangeText={function (text: string): void {
+            throw new Error("Function not implemented.");
+          } }          />
           <Bluebutton title = "Next"
           onPress={() => navigation.navigate("register_empty")}
           />

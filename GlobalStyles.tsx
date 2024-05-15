@@ -28,6 +28,7 @@ export const FontFamily = {
     primaryBase: "#5766c7",
     darkGrey: "#acadb9",
     greyscale400: "#9ca3af",
+    greyscale200: "#BABABA",
     colorMediumslateblue_50: "#8A97FA",
     colorMediumslateblue_100: "#5568f7",
     colorMediumslateblue_200: "#455af7",

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ImageSourcePropType,
   TouchableOpacityProps,
+  StyleProp,
 } from "react-native";
 import { FontSize, FontFamily, Color, Padding, Border } from "../GlobalStyles";
 
@@ -26,6 +27,7 @@ const BlueButton: React.FC<BlueButtonProps> = ({title, onPress = () => {}}) => {
     );
 }
 
+
 export default BlueButton;
 
 const styles = StyleSheet.create({
@@ -44,5 +46,5 @@ const styles = StyleSheet.create({
         fontSize: FontSize.size_base,
         letterSpacing: -0.3,
         fontWeight: "500",
-    }
+    },
 });

@@ -1,6 +1,8 @@
 import * as React from "react";
 import api from './app/api';
 import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ActivityIndicator } from "react-native";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from "expo-font";
@@ -13,7 +15,6 @@ import ForgetPasswordEmpty from "./screens/ForgetPasswordEmpty";
 import VerifyEmtpy from "./screens/VerifyEmtpy";
 import VerificationEmpty from "./screens/VerificationEmpty"; */
 
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Text, Pressable, TouchableOpacity } from "react-native";
 import Login from "./app/login";
 import FilterPage from "./app/filter";
@@ -46,6 +47,11 @@ const App = () => {
       <NavigationContainer>
         {hideSplashScreen ? (
           <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen 
+              name="home"
+              component={Home}
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="filter"
               component={FilterPage}
@@ -66,11 +72,7 @@ const App = () => {
               component={Login}
               options={{ headerShown: false }}
             />
-            <Stack.Screen 
-              name="home"
-              component={Home}
-              options={{ headerShown: false }}
-            />
+            
           </Stack.Navigator>
         ) : (
           <ActivityIndicator size="large" color="#0000ff"/>

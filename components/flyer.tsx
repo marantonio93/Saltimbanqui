@@ -14,7 +14,7 @@ export interface Event {
     title: string;
     date: string;
     city: string;
-    price: number;
+    price_amount: number;
     // Otros campos del evento
   }
   
@@ -36,17 +36,20 @@ export interface Event {
           <Image
             style={styles.flyerImage}
             contentFit="cover"
-            source={require("../assets/images/flyersalsaricafreitagneu1200px.jpeg")}
+            contentPosition={"center"}
+            source={require("../assets/images/bananenreiferei_2024_05_18.jpg")}
           />
         </View>
   
         <View style={styles.flyerDataContainer}>
-          <View style={styles.flyerPlaceTimeContainer}>
-            <Text style={styles.flyerTime}> {event.date} </Text>
-          </View>
           <View>
             <Text style={styles.flyerTitle}>{event.title}</Text>
           </View>
+          
+          <View style={styles.flyerPlaceTimeContainer}>
+            <Text style={styles.flyerTime}> {event.date} </Text>
+          </View>
+          
           <View style={styles.flyerInfo}>
             <View style={styles.flyerInfo}>
               <Image
@@ -57,7 +60,7 @@ export interface Event {
               <Text style={styles.flyerPlace}>{event.city}</Text>
             </View>
             <View style={styles.flyerPrice}>
-              <Text>{event.price}</Text>
+              <Text>{event.price_amount} CHF</Text>
             </View>
           </View>
         </View>
@@ -75,23 +78,29 @@ export interface Event {
       borderRadius: Border.br_base, 
       margin: 5, 
     }, 
-    imageFlyerContainer: {
-      flex: 1,
-    },
+    imageFlyerContainer: {},
+    
     flyerImage: {
       borderTopRightRadius: Border.br_base, 
       borderTopLeftRadius: Border.br_base, 
-      height: 300,
-      maxWidth: "100%",
+      height: 400,
       width: "100%",
     },
     flyerDataContainer:{
-      flex: 1/4,
-      padding: Padding.p_xs,
+      padding: Padding.p_mini,
+      backgroundColor: Color.colorWhitesmoke_100,
+      borderBottomLeftRadius: Border.br_smi,
+      borderBottomRightRadius: Border.br_smi,
+      
     },
     flyerPlaceTimeContainer:{
       flexDirection: "row",
-      paddingTop: 3,
+    },
+    flyerTitle: {
+      alignSelf: "stretch",
+      color: Color.greyscale900,
+      fontSize: FontSize.size_3xl,
+      fontFamily: FontFamily.interBlack,
     },
     flyerTime:{
       textAlign: "left",
@@ -99,16 +108,7 @@ export interface Event {
       fontSize: FontSize.size_xs,
       color: Color.greyscale400,
       fontFamily: FontFamily.interBlack,
-    },
-    flyerTitle: {
-      alignSelf: "stretch",
-      marginTop: 4,
-      color: Color.greyscale900,
-      fontFamily: FontFamily.interBlack,
-    },
-    flyerMapIcon: {
-      height: 12.32,
-      width: 10.67,
+      marginTop: Padding.p_xs,
     },
     flyerInfo: {
       flexDirection: "row",
@@ -116,12 +116,18 @@ export interface Event {
       alignItems: "center",
       marginTop: 5,
     },
-    flyerPrice:{
-      justifyContent: "flex-end",
-      alignSelf: "flex-end",
+    flyerMapIcon: {
+      height: 12.32,
+      width: 10.67,
     },
     flyerPlace: {
       marginLeft: 3,
+      color: Color.greyscale200,
+      fontFamily: FontFamily.interBlack,
+    },
+    flyerPrice:{
+      justifyContent: "flex-end",
+      alignSelf: "flex-end",
     },
   });
   

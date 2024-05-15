@@ -4,6 +4,7 @@ from fastapi.responses import HTMLResponse
 from config.database import engine, Base
 from middlewares.errror_handler import ErrorHandler
 from routers.event import event_router
+from routers.filter_events import filter_events_router
 from routers.music_type import music_type_router
 from routers.user import user_router
 
@@ -31,6 +32,8 @@ app.add_middleware(ErrorHandler)
 app.include_router(event_router)
 app.include_router(music_type_router)
 app.include_router(user_router)
+app.include_router(filter_events_router)
+
 
 Base.metadata.create_all(bind=engine)
 

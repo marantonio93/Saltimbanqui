@@ -1,7 +1,6 @@
 from models.event import Event as EventModel
 from models.event import MusicType as MusicTypeModel
 from schemas.event import Event
-from schemas.music_type import MusicType
 from sqlalchemy import or_
 
 class EventService():
@@ -17,10 +16,6 @@ class EventService():
         result = self.db.query(EventModel).filter(EventModel.id == id).first()
         return result
     
-    def get_event_by_city(self, city):
-        result = self.db.query(EventModel).filter(EventModel.city == city).all()
-        return result
-    
     def create_event(self, event: Event, music_ids: list):
         new_event = EventModel(**event.model_dump())
         musicresults = []
@@ -33,7 +28,6 @@ class EventService():
         self.db.commit()
         self.db.refresh()
         return
-    
     
     def update_event(self, id: int, data: Event):
         event = self.db.query(EventModel).filter(EventModel.id == id).first()
