@@ -16,6 +16,26 @@ event_musicType_table = Table(
     Column("musicType_id", ForeignKey("music_types.id")),
 )
 
+""" event_dj_table = Table(
+    "event_dj_table",
+    Base.metadata,
+    Column("event_id", ForeignKey("events.id")),
+    Column("dj_id", ForeignKey("djs.id")),
+)
+
+event_artist_table = Table(
+    "event_artist_table",
+    Base.metadata,
+    Column("event_id", ForeignKey("events.id")),
+    Column("artist_id", ForeignKey("artist.id")),
+)
+
+event_user_table = Table(
+    "event_user_table",
+    Base.metadata,
+    Column("event_id", ForeignKey("events.id")),
+    Column("user_id", ForeignKey("users.id")),
+) """
 
 class Event (Base):
 
@@ -30,8 +50,12 @@ class Event (Base):
     city = Column (String)
     organizer = Column (String)
     price_type = Column (Enum(PriceType))
-    price_amount = Column (Float)  
+    price_amount = Column (Float) 
+    image = Column(String) 
     music = relationship("MusicType", secondary = event_musicType_table, back_populates="events", lazy="joined" )
+"""     djs = relationship("DJ", secondary = event_dj_table, back_populates="events", lazy="joined" )
+    artists = relationship("Artist", secondary = event_artist_table, back_populates="events", lazy="joined" )
+    users = relationship("User", secondary = event_user_table, back_populates="events", lazy="joined" ) """
 
 class MusicType(Base):
     __tablename__ = "music_types"
@@ -39,3 +63,30 @@ class MusicType(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     events = relationship("Event", secondary=event_musicType_table, back_populates = "music") 
+
+""" class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    surname = Column(String)
+    email = Column(String)
+    password = Column(String)
+    events = relationship("Event", secondary=event_user_table, back_populates = "users") 
+
+class DJ(Base):
+    __tablename__ = "djs"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    instagram = Column(String)
+    events = relationship("Event", secondary=event_dj_table, back_populates = "djs") 
+
+class Artist(Base):
+    __tablename__ = "artists"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    instagram = Column(String)
+    events = relationship("Event", secondary=event_artist_table, back_populates = "artists")  """
+

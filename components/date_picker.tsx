@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { StyleSheet, Text, Pressable } from "react-native";
+import { FontFamily, FontSize, Padding } from "../GlobalStyles";
 
 interface DatePickerProps {
     date: Date;
@@ -25,7 +26,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ date, onChange, show, setShow, 
     return (
         <>
             <Pressable style={styles.dateButton} onPress={handlePress} >
-                <Text style={styles.dateText}>{date.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}</Text>
+                <Text style={styles.dateText}>{date.toLocaleDateString('de-DE', {day: '2-digit', month: 'short', year: 'numeric' })}</Text>
                 {show && (
                     <DateTimePicker
                         testID="datePicker"
@@ -45,14 +46,11 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         justifyContent: 'center',
         paddingVertical: 12,
-        paddingHorizontal: 32,
         borderRadius: 4,
+        paddingHorizontal: Padding.p_xs,
     },
     dateText: {
-        fontSize: 16,
-        lineHeight: 21,
-        fontWeight: 'bold',
-        letterSpacing: 0.25,
+        fontSize: FontSize.size_mini,
     }
 });
 

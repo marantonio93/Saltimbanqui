@@ -16,7 +16,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Buscar..."
+        placeholder="Search..."
         value={searchQuery}
         onChangeText={setSearchQuery}
         returnKeyType="search" // Configura el botón de retorno del teclado para que muestre "Buscar"
@@ -29,14 +29,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal:10
+    paddingHorizontal:10,
   },
   input: {
     borderBottomWidth: 0.4,
     borderColor: 'gray',
     borderRadius: 5,
     paddingHorizontal: 10,
-    textAlignVertical: "bottom"
+    textAlignVertical: "bottom",
+    paddingBottom: 5,
   },
 });
 

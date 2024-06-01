@@ -9,7 +9,6 @@ import {
   ScrollView,
 } from "react-native";
 import { Image } from "expo-image";
-import { Stack } from 'expo-router';
 import { StackNavigationProp  } from "@react-navigation/stack";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { FontSize, FontFamily, Color, Padding, Border } from "../GlobalStyles";

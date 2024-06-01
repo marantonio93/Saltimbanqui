@@ -12,7 +12,7 @@ class PriceType(str, Enum):
 class Event(BaseModel):
     id: Optional[int] = None
     title: str = Field(min_length=5, max_length=30)
-    description: str = Field(min_Length=10, max_length=50)
+    description: str = Field(min_Length=10)
     date: date
     place: str
     street: str
@@ -20,6 +20,7 @@ class Event(BaseModel):
     organizer: Optional [str]
     price_type: PriceType
     price_amount: Optional[float]
+    image: str
     music: Optional[List[MusicType]] = []
 
     class Config:
@@ -33,7 +34,9 @@ class Event(BaseModel):
                 "city": "Ciudad",
                 "organizer": "Tu",
                 "price_type": "ADMISSION",
-                "price_amount": 10.0                }
+                "price_amount": 10.0,
+                "image": "place + date"                
+            }
         }
 
         orm_mode = True

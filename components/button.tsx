@@ -4,9 +4,6 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  ImageSourcePropType,
-  TouchableOpacityProps,
-  StyleProp,
 } from "react-native";
 import { FontSize, FontFamily, Color, Padding, Border } from "../GlobalStyles";
 

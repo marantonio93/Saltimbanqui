@@ -1,4 +1,4 @@
-import * as React from "react";
+/* import * as React from "react";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
   Text,
@@ -146,4 +146,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegisterEmpty;
+export default RegisterEmpty; */

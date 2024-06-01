@@ -1,25 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { Color, FontSize, Border } from '../GlobalStyles';
 
 interface DanceFilterProps {
   danceType: 'Salsa' | 'Bachata' | 'Kizomba' | 'Timba';
+  selected: boolean;
+  onSelect: (danceType: 'Salsa' | 'Bachata' | 'Kizomba' | 'Timba', selected: boolean) => void;
 }
 
-const DanceFilter: React.FC<DanceFilterProps> = ({ danceType }) => {
-  const [buttonColor, setButtonColor] = useState<boolean>(false);
+const DanceFilter: React.FC<DanceFilterProps> = ({ danceType, selected, onSelect}) => {
+  const [isSelected, setIsSelected] = useState<boolean>(selected);
+
+  useEffect(() => {
+    setIsSelected(selected);
+  }, [selected]);
 
   const handlePress = () => {
-    setButtonColor(!buttonColor);
-    // Aquí podrías llamar a una función que maneje el cambio de estado en el componente padre
-    // Puedes pasar danceType como argumento para identificar qué tipo de baile se está seleccionando
+    const newSelected = !isSelected;
+    setIsSelected(newSelected);
+    onSelect(danceType, newSelected);
   };
 
   return (
       <TouchableOpacity
         onPress={handlePress}
         activeOpacity={0.2}
-        style={buttonColor === false ? styles.registerButtonOFF : styles.registerButtonON}>
+        style={isSelected ? styles.registerButtonOFF : styles.registerButtonON}>
         <Text style={styles.next}>{danceType}</Text>
       </TouchableOpacity>
   );

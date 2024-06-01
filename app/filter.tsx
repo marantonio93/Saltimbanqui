@@ -1,9 +1,10 @@
 import  React, {useState, useEffect} from "react";
-import {StyleSheet, Button, Text, View, Pressable, Platform, ScrollView, TouchableOpacity} from "react-native";
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from "react-native";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StackNavigationProp  } from "@react-navigation/stack";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
-import { Border, Color, FontFamily, FontSize } from "../GlobalStyles";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Border, Color, FontFamily, FontSize, Padding } from "../GlobalStyles";
 
 import DatePicker from "../components/date_picker";
 import DanceFilter from '../components/dance_filter';
@@ -16,8 +17,48 @@ const FilterPage = () => {
     
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+    const [selectedDanceStyles, setSelectedDanceStyles] = useState<string[]>([]);
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+
+    useEffect(() => {
+        loadFilters();
+      }, []);
+
+      // Guardar filtros seleccionados
+    const saveFilters = async () => {
+        try {
+        const filters = { startDate, endDate, selectedDanceStyles };
+        await AsyncStorage.setItem("filters", JSON.stringify(filters));
+        navigation.navigate("home");
+        } catch (error) {
+        console.error("Error saving filters:", error);
+        }
+    };
+
+    // Cargar filtros almacenados
+    const loadFilters = async () => {
+        try {
+        const filtersString = await AsyncStorage.getItem("filters");
+        if (filtersString) {
+            const filters = JSON.parse(filtersString);
+            setStartDate(new Date(filters.startDate));
+            setEndDate(new Date(filters.endDate));
+            setSelectedDanceStyles(filters.selectedDanceStyles || []);
+        }
+        } catch (error) {
+        console.error("Error loading filters:", error);
+        }
+    };
+
+    // Función para manejar la selección de un estilo de baile
+    const handleDanceStyleSelection = (danceType: string, selected: boolean) => {
+        if (selected) {
+            setSelectedDanceStyles([...selectedDanceStyles, danceType]);
+        } else {
+            setSelectedDanceStyles(selectedDanceStyles.filter(style => style !== danceType));
+        }
+    };
 
 return(
 
@@ -26,8 +67,9 @@ return(
             <Text style = {styles.titleText}>Filters</Text>
         </View>
         <View style={styles.content}>
-            <View>
-                <Text>Fecha de Inicio</Text>
+            <View style = {styles.categoryView}>
+                <Text style = {styles.categoryText}>Dates</Text>
+                <View style = {styles.datePickers}>
                 <DatePicker
                     date={startDate}
                     onChange={setStartDate}
@@ -35,9 +77,8 @@ return(
                     setShow={setShowStartDatePicker}
                     mode="date"
                 />
-            </View>
-            <View>
-                <Text>Fecha de Finalización</Text>
+                <Text style = {styles.guion}> _ </Text>
+                
                 <DatePicker
                     date={endDate}
                     onChange={setEndDate}
@@ -45,21 +86,22 @@ return(
                     setShow={setShowEndDatePicker}
                     mode="date"
                 />
+                </View>
             </View>
-            <View>
-                <Text>Estilos de baile</Text>
+            <View style = {styles.categoryView}>
+                <Text style = {styles.categoryText}>Dance Styles</Text>
                 <View style={styles.danceFilter}>
                     <ScrollView scrollEventThrottle={16} horizontal={true} showsHorizontalScrollIndicator={false}>
-                        <DanceFilter danceType="Salsa" />
-                        <DanceFilter danceType="Bachata" />
-                        <DanceFilter danceType="Kizomba" />
-                        <DanceFilter danceType="Timba" />   
+                        <DanceFilter danceType="Salsa" selected={selectedDanceStyles.includes("Salsa")} onSelect={handleDanceStyleSelection} />
+                        <DanceFilter danceType="Bachata" selected={selectedDanceStyles.includes("Bachata")} onSelect={handleDanceStyleSelection} />
+                        <DanceFilter danceType="Kizomba" selected={selectedDanceStyles.includes("Kizomba")} onSelect={handleDanceStyleSelection} />
+                        <DanceFilter danceType="Timba" selected={selectedDanceStyles.includes("Timba")} onSelect={handleDanceStyleSelection} />  
                     </ScrollView>
                 </View>
             </View>
-            <View>
-                <Text>Localización</Text>
-                <Text>Madrid, España</Text>
+            <View style = {styles.categoryView}>
+                <Text style = {styles.categoryText}>Location</Text>
+                <Text style = {styles.datePickers}>Madrid, España</Text>
             </View>
         </View>
         <View style = {styles.buttonContainer}>
@@ -82,47 +124,43 @@ const styles = StyleSheet.create({
         flex:1,
         paddingTop: 30,
         paddingBottom: 20,
-        paddingLeft: 10,
-        paddingRight: 10,
-    },
+        paddingHorizontal: 10,
+        backgroundColor: Color.bG,
 
+    },
     titleText: {
-        fontSize: 22,
-        letterSpacing: -1.5,
-        lineHeight: 48,
+        fontSize: FontSize.size_screenTitleFilter,
         alignSelf: "stretch",
         textAlign: "center",
         color: Color.black,
-        fontFamily: FontFamily.interBlack,
+        fontFamily: FontFamily.interBold,
+        paddingTop: Padding.p_xl_2,
+        paddingBottom: Padding.p_xl_2,
     },
-
     content: {
         justifyContent: 'space-between',
-        marginHorizontal: 10,
+        paddingHorizontal: Padding.p_xl_2,
+        marginHorizontal: 10
     },
-
-    datebutton:{
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 32,
-        borderRadius: 4,
+    categoryView: {
+        justifyContent: "center",
     },
-
-    datetext:{
-        fontSize: 16,
-        lineHeight: 21,
-        fontWeight: 'bold',
-        letterSpacing: 0.25,
+    categoryText: {
+        fontSize: FontSize.size_mini,
+        fontFamily: FontFamily.interBlack,
+        paddingVertical: Padding.p_xs,
     },
-    
+    datePickers: {
+        flexDirection: "row",
+    },
+    guion: {
+        marginTop: 5,
+        alignContent:"center",
+    },
     danceFilter: {
         flexDirection: "row",
-        alignItems: "flex-start",
+        alignItems: "center",
         marginLeft: -10,
-        marginVertical: 5,
-        paddingTop: 5,
-        paddingBottom: 5,
     },
 
     buttonContainer:{
