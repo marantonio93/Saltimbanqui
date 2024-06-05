@@ -7,7 +7,21 @@ class EventFilter():
     def __init__(self, db) -> None:
         self.db = db
 
-    def get_by_music(self, music_types_list, start_date, end_date, city):
+    def get_by_music(self, start_date, end_date):
+        result = self.db.query(EventModel)
+        if start_date:
+            result = result.filter(EventModel.date >= start_date )
+        if end_date:
+            result = result.filter(EventModel.date <= end_date)
+        result = result.all()
+        return result
+    
+    def get_events_by_search(self, title):
+        search_term = f"%{title}%"
+        result = self.db.query(EventModel).filter(or_(EventModel.title.ilike(search_term))).all()
+        return result
+    
+"""     def get_by_music(self, music_types_list, start_date, end_date, city):
         result = self.db.query(EventModel)
         if music_types_list:
             result = result.filter(EventModel.music.any(MusicType.name.in_(music_types_list)))
@@ -20,14 +34,7 @@ class EventFilter():
         
         result = result.all()
         
-        return result
-
-    def get_events_by_search(self, title):
-        search_term = f"%{title}%"
-        result = self.db.query(EventModel).filter(or_(EventModel.title.ilike(search_term))).all()
-        return result
-
-
+        return result """
 
     # Función para filtrar los eventos en base a los criterios proporcionados
 """      def get_filter_events(self, filters: EventFilter):

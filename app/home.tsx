@@ -10,36 +10,68 @@ import {
 } from "react-native";
 import { Image } from "expo-image";
 import { StackNavigationProp  } from "@react-navigation/stack";
-import { useNavigation, ParamListBase } from "@react-navigation/native";
+import { useNavigation, ParamListBase, useIsFocused, useRoute, RouteProp } from "@react-navigation/native";
 import { FontSize, FontFamily, Color, Padding, Border } from "../GlobalStyles";
 import SearchBar from '../components/search_bar';
 import EventCard, {Event} from '../components/flyer';
 import api from "./api";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const {width, height} = Dimensions.get('window')
 const ITEM_Size = height*0.7
 
+type HomeScreenRouteProp = RouteProp<{ params: { applyFilters?: boolean } }, 'params'>;
+
 const Home = () => {
     const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
-
-    // Inicializa events como un array vacío
+    const isFocused = useIsFocused();
+    const route = useRoute<HomeScreenRouteProp>();
     const [events, setEvents] = React.useState<Event[]>([]);
     const [searchResults, setSearchResults] = React.useState<Event[]>([]);
 
     
       // Realiza una solicitud GET para obtener eventos desde el backend
-      const fetchEvents = async () => {
-        try {
-          const response = await api.get("/events");
-          setEvents(response.data); // Actualiza el estado con los eventos recibidos del backend
-        } catch (error) {
-          console.error("Error fetching events:", error);
+    const fetchEvents = async () => {
+      try {
+        console.log("Fetching events...");
+        const response = await api.get("/events");
+        console.log("Events response:", response.data); // Agrega esta línea para imprimir la respuesta
+        setEvents(response.data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    const fetchFilteredEvents = async () => {
+      try {
+        console.log("Fetching filtered events...");
+        const filtersString = await AsyncStorage.getItem("filters");
+        if (filtersString) {
+          const filters = JSON.parse(filtersString);
+          console.log("Filters:", filters); // Agrega esta línea para imprimir los filtros
+          const response = await api.get('/filter/events/', {
+            params: {
+              start_date: filters.startDate,
+              end_date: filters.endDate,
+            },
+          });
+          console.log("Filtered events response:", response.data); // Agrega esta línea para imprimir la respuesta
+          setEvents(response.data);
         }
-      };
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
   
     React.useEffect(() => {
-      fetchEvents(); // Llama a la función para obtener eventos cuando el componente se monte
-    }, []); // El segundo argumento [] asegura que este efecto se ejecute solo una vez al montar el componente    
+      if (route.params?.applyFilters) {
+        fetchFilteredEvents();
+      } else {
+        fetchEvents();
+      }
+    }, [isFocused, route.params?.applyFilters]);
+
 
       const handleSearch = async (searchTerm: string) => {
         if (searchTerm.trim() === ""){
@@ -48,6 +80,7 @@ const Home = () => {
         }else{
           try {
             const response = await api.get(`/filter/events/${searchTerm}`);
+            console.log("Search Results", response.data);
             setSearchResults(response.data); // Actualiza el estado con los resultados de la búsqueda
           } catch (error) {
             console.error("Error searching events:", error);

@@ -1,9 +1,8 @@
-import  React, {useState, useEffect} from "react";
+/* import  React, {useState, useEffect} from "react";
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from "react-native";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StackNavigationProp  } from "@react-navigation/stack";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
-import { HeaderBackButton } from '@react-navigation/elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Border, Color, FontFamily, FontSize, Padding } from "../GlobalStyles";
 
@@ -12,17 +11,15 @@ import DanceFilter from '../components/dance_filter';
 import BlueButton from '../components/button';
 
 
-
-const FilterPage = () => {
+const FilterPageCopy = () => {
 
     const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
-
+    
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [selectedDanceStyles, setSelectedDanceStyles] = useState<string[]>([]);
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-    const [applyFilters, setApplyFilters] = useState(false); // Estado para aplicar filtros
 
     useEffect(() => {
         loadFilters();
@@ -31,51 +28,43 @@ const FilterPage = () => {
       // Guardar filtros seleccionados
     const saveFilters = async () => {
         try {
-            const filters = { startDate: startDate.toISOString(), endDate: endDate.toISOString() };
-            await AsyncStorage.setItem("filters", JSON.stringify(filters));
-            navigation.navigate("home", { applyFilters: true});
+        const filters = { startDate, endDate, selectedDanceStyles };
+        await AsyncStorage.setItem("filters", JSON.stringify(filters));
+        navigation.navigate("home");
         } catch (error) {
-            console.error("Error saving filters:", error);
+        console.error("Error saving filters:", error);
         }
     };
 
     // Cargar filtros almacenados
     const loadFilters = async () => {
         try {
-            const filtersString = await AsyncStorage.getItem("filters");
-            if (filtersString) {
-                const filters = JSON.parse(filtersString);
-                setStartDate(new Date(filters.startDate));
-                setEndDate(new Date(filters.endDate));
-                setApplyFilters(true); // Aplicar filtros si hay filtros almacenados
-            }
+        const filtersString = await AsyncStorage.getItem("filters");
+        if (filtersString) {
+            const filters = JSON.parse(filtersString);
+            setStartDate(new Date(filters.startDate));
+            setEndDate(new Date(filters.endDate));
+            setSelectedDanceStyles(filters.selectedDanceStyles || []);
+        }
         } catch (error) {
         console.error("Error loading filters:", error);
         }
     };
 
-    const clearFilters = async () => {
-        try{
-            const today = new Date();
-            setStartDate(today);
-            setEndDate(today);
-            await AsyncStorage.removeItem("filters");
-            setApplyFilters(false);
-        } catch (error) {
-            console.error("Error clearing filters:", error);
+    // Función para manejar la selección de un estilo de baile
+    const handleDanceStyleSelection = (danceType: string, selected: boolean) => {
+        if (selected) {
+            setSelectedDanceStyles([...selectedDanceStyles, danceType]);
+        } else {
+            setSelectedDanceStyles(selectedDanceStyles.filter(style => style !== danceType));
         }
-      };
+    };
 
 return(
 
     <SafeAreaProvider style = {styles.container}>
-        <View style = {styles.maintitle}> 
-            <Text>arrow</Text>
+        <View> 
             <Text style = {styles.titleText}>Filters</Text>
-            <TouchableOpacity
-            onPress = {clearFilters}>
-                <Text style={styles.resetText}>Reset all</Text>
-            </TouchableOpacity>
         </View>
         <View style={styles.content}>
             <View style = {styles.categoryView}>
@@ -99,14 +88,29 @@ return(
                 />
                 </View>
             </View>
+            <View style = {styles.categoryView}>
+                <Text style = {styles.categoryText}>Dance Styles</Text>
+                <View style={styles.danceFilter}>
+                    <ScrollView scrollEventThrottle={16} horizontal={true} showsHorizontalScrollIndicator={false}>
+                        <DanceFilter danceType="Salsa" selected={selectedDanceStyles.includes("Salsa")} onSelect={handleDanceStyleSelection} />
+                        <DanceFilter danceType="Bachata" selected={selectedDanceStyles.includes("Bachata")} onSelect={handleDanceStyleSelection} />
+                        <DanceFilter danceType="Kizomba" selected={selectedDanceStyles.includes("Kizomba")} onSelect={handleDanceStyleSelection} />
+                        <DanceFilter danceType="Timba" selected={selectedDanceStyles.includes("Timba")} onSelect={handleDanceStyleSelection} />  
+                    </ScrollView>
+                </View>
+            </View>
+            <View style = {styles.categoryView}>
+                <Text style = {styles.categoryText}>Location</Text>
+                <Text style = {styles.datePickers}>Madrid, España</Text>
+            </View>
         </View>
         <View style = {styles.buttonContainer}>
             <TouchableOpacity
-                onPress = {saveFilters}
+                onPress = {() => navigation.navigate("home")}
                 activeOpacity={0.2}
                 style = {styles.registerButton} 
                 >
-                <Text style={styles.next}>{"Apply FIlters"}</Text>
+                <Text style={styles.next}>Apply</Text>
             </TouchableOpacity>
         </View>
         <View></View>   
@@ -163,17 +167,6 @@ const styles = StyleSheet.create({
         alignItems:'center',
         marginTop: 60,
     },
-    clearButton: {
-        marginTop: 10,
-        alignSelf: 'center',
-        padding: 10,
-        backgroundColor: Color.colorMediumslateblue_200,
-        borderRadius: Border.br_sm,
-    },
-      clearButtonText: {
-        color: "red",
-        fontFamily: FontFamily.interBold,
-    },
     next: {
         color: Color.bG,
         textAlign: "left",
@@ -191,20 +184,8 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         width: 200,
     },
-    maintitle: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    }, 
-    resetText:{
-        fontFamily: FontFamily.interSemiBold,
-        fontSize: FontSize.size_mini,
-        alignSelf: "stretch",
-        textAlign: "center",
-        color: Color.black,
-    },
 
 });
 
 
-export default FilterPage;
+export default FilterPageCopy; */

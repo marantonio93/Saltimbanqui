@@ -11,6 +11,7 @@ import { Image } from "expo-image";
 import { enGB } from 'date-fns/locale'; 
 import { format, parseISO } from 'date-fns';
 import { Color, Border, FontSize, FontFamily, Padding } from "../GlobalStyles";
+import ArrowGoBack from "../components/arrow_go_back";
 
 /* type EventDetailScreenNavigationProp = StackNavigationProp<RootStackParamList, "EventDetail">;
 type EventDetailScreenRouteProp = RouteProp<RootStackParamList, "EventDetail">;
@@ -34,16 +35,8 @@ const EventDetail: React.FC<Props> = ({navigation, route}) => {
 
     return (
     <SafeAreaProvider style={styles.container}>
-        <TouchableOpacity style={styles.overlayArrow} onPress={handleGoBack}>
-            <Image 
-                style = {styles.arrow}
-                contentFit="cover"
-                contentPosition={"center"}
-                source={require("../assets/smallArrow.svg")}
-            />
-        </TouchableOpacity>
-        
         <View style = {styles.imageContainer}>
+            <ArrowGoBack onPress={handleGoBack} />
             <Image style = {styles.flyerImage}
                 contentFit="cover"
                 contentPosition={"center"}
