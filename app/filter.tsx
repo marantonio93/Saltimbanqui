@@ -48,6 +48,7 @@ const FilterPage = () => {
                 setStartDate(new Date(filters.startDate));
                 setEndDate(new Date(filters.endDate));
                 setApplyFilters(true); // Aplicar filtros si hay filtros almacenados
+                console.log(applyFilters);
             }
         } catch (error) {
         console.error("Error loading filters:", error);
@@ -60,7 +61,8 @@ const FilterPage = () => {
             setStartDate(today);
             setEndDate(today);
             await AsyncStorage.removeItem("filters");
-            setApplyFilters(false);
+            navigation.navigate("home", { applyFilters: false });
+            console.log(applyFilters);
         } catch (error) {
             console.error("Error clearing filters:", error);
         }

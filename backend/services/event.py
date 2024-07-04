@@ -1,15 +1,22 @@
 from models.event import Event as EventModel
 from models.event import MusicType as MusicTypeModel
 from schemas.event import Event
-from sqlalchemy import or_
+from sqlalchemy import asc, or_
+from datetime import datetime
 
 class EventService():
 
     def __init__(self, db) -> None:
         self.db = db
+    
+    def get_allEvents(self):
+        current_date = datetime.now()
+        result = self.db.query(EventModel).order_by(asc(EventModel.date)).all()
+        return result
 
     def get_events(self):
-        result = self.db.query(EventModel).all()
+        current_date = datetime.now()
+        result = self.db.query(EventModel).filter(EventModel.date >= current_date).order_by(asc(EventModel.date)).all()
         return result
     
     def get_event(self, id):
@@ -26,7 +33,6 @@ class EventService():
         new_event.music = musicresults
         self.db.add(new_event)
         self.db.commit()
-        self.db.refresh()
         return
     
     def update_event(self, id: int, data: Event):

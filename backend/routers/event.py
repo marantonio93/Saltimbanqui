@@ -9,6 +9,12 @@ from config.database import Session
 
 event_router = APIRouter()
 
+@event_router.get('/allevents', tags = ['events'], response_model= List[Event], status_code=200 )
+def get_allEvents() -> List[Event]:
+    db = Session()
+    result = EventService(db).get_allEvents()
+    return JSONResponse(status_code=200, content=jsonable_encoder(result))
+
 @event_router.get('/events', tags = ['events'], response_model= List[Event], status_code=200 )
 def get_events() -> List[Event]:
     db = Session()

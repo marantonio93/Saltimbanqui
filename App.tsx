@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from "expo-font";
 import { HeaderBackButton } from '@react-navigation/elements';
 import Home from "./app/home";
+import HomeSwitzerland from "./app/home_Switzerland";
 import InvitationCode from "./app/invitation_code";
 //import RegisterEmpty from "./app/register_empty";
 import { View, Text, Image, Pressable, TouchableOpacity } from "react-native";
@@ -55,6 +56,11 @@ const App = () => {
       <NavigationContainer>
         {hideSplashScreen ? (
           <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen 
+              name="homeswitzerland"
+              component={HomeSwitzerland}
+              options={{ headerShown: false }}
+            />
             <Stack.Screen 
               name="home"
               component={Home}

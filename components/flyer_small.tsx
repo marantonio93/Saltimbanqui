@@ -44,7 +44,8 @@ export interface Event {
             <Text 
               style={styles.flyerTitle}
               numberOfLines={2}
-              ellipsizeMode="tail">{event.title}</Text>
+              ellipsizeMode="tail"
+            >{event.title}</Text>
           </View>
           
           <View style={styles.flyerPlaceTimeContainer}>
@@ -77,12 +78,13 @@ export interface Event {
     flyerContainer: {
       backgroundColor: Color.colorWhite,
       borderRadius: Border.br_base, 
-      margin: 5, 
+      margin: 5,
+      height:400, 
     },     
     flyerImage: {
       borderTopRightRadius: Border.br_base, 
       borderTopLeftRadius: Border.br_base, 
-      height: 400,
+      height: 250,
       width: "100%",
     },
     flyerDataContainer:{
@@ -90,6 +92,8 @@ export interface Event {
       backgroundColor: Color.colorWhite,
       borderBottomLeftRadius: Border.br_smi,
       borderBottomRightRadius: Border.br_smi,
+      flex: 1, // Asegura que el contenido se distribuya de manera uniforme
+      justifyContent: 'space-between', // Distribuye el espacio entre los elementos
     },
     flyerPlaceTimeContainer:{
       flexDirection: "row",
@@ -99,6 +103,8 @@ export interface Event {
       color: Color.greyscale900,
       fontSize: FontSize.size_mid_7,
       fontFamily: FontFamily.interBlack,
+      height: 50,
+      
     },
     dateText:{
       textAlign: "left",
