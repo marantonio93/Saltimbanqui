@@ -9,6 +9,7 @@ import {
   FlatList,
   SectionList,
   Dimensions,
+  Animated,
 } from "react-native";
 import { Image } from "expo-image";
 import { StackNavigationProp  } from "@react-navigation/stack";
@@ -23,13 +24,20 @@ import { format, parseISO } from 'date-fns';
 
 type HomeScreenRouteProp = RouteProp<{ params: { applyFilters?: boolean } }, 'params'>;
 
+interface spacerItem {
+  key: string;
+}
+
+type EventItem = Event | spacerItem
+
 interface EventSection {
   title: string;
-  data: Event[];
+  data: EventItem[];
 }
 
 const {width, height} = Dimensions.get('window')
 const ITEM_Size = width*0.7
+const SPACER_ITEM_Size = (width - ITEM_Size)/2;
 
 const groupEventsByDate = (events: Event[]): EventSection[] => {
   const groupedEvents: { [key: string]: Event[] } = {};
@@ -44,7 +52,7 @@ const groupEventsByDate = (events: Event[]): EventSection[] => {
 
   return Object.keys(groupedEvents).map(date => ({
     title: date,
-    data: groupedEvents[date],
+    data: [{key: "left-spacer" }, ...groupedEvents[date], {key:"right-spacer"}],
   }));
 };
 
@@ -57,6 +65,7 @@ const HomeSwitzerland = () => {
   const route = useRoute<HomeScreenRouteProp>();
   const [events, setEvents] = React.useState<Event[]>([]);
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({});
+  const [scrollValues, setScrollValues] = useState<{ [key: string]: Animated.Value }>({});
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -64,12 +73,18 @@ const HomeSwitzerland = () => {
         console.log("Fetching events...");
         const response = await api.get("/events");
         console.log("Events response:", response.data); // Agrega esta línea para imprimir la respuesta
+        // [spacer, ...movies, spacer]
         setEvents(response.data);
+        
         const initialExpandedState: { [key: string]: boolean } = {};
-       (response.data as Event[]).forEach((event:Event) => {
+        const initialScrollValues: {[key: string]: Animated.Value} = {};
+        
+        (response.data as Event[]).forEach((event:Event) => {
           initialExpandedState[event.date] = true;
+          initialScrollValues[event.date] = new Animated.Value(0);
         });
         setExpandedSections(initialExpandedState);
+        setScrollValues(initialScrollValues);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -117,7 +132,13 @@ const HomeSwitzerland = () => {
       <View style={styles.viewContent}>
         <SectionList
           sections={sections}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => {
+            if ("key" in item) {
+              return item.key + index;
+            } else {
+              return item.id.toString();
+            }
+          }}
           renderSectionHeader={({ section }) => (
             <>
             <TouchableOpacity onPress={() => toggleSection(section.title)} style={styles.sectionHeader}>
@@ -127,18 +148,44 @@ const HomeSwitzerland = () => {
               </Text>
             </TouchableOpacity>
             {expandedSections[section.title] && (
-              <FlatList
+              <Animated.FlatList
                 data={section.data}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item, index) => {
+                  if ("key" in item) {
+                    return item.key + index;
+                  } else {
+                    return item.id.toString();
+                  }
+                }}
                 snapToInterval={ITEM_Size}
                 bounces={false}
-                renderItem={({ item }) => (
-                  <View style={styles.flyerViewContainer}>
-                    <EventCard event={item} />
-                  </View>
+                onScroll={Animated.event(
+                  [{nativeEvent: { contentOffset: {x: scrollValues[section.title] }}}],
+                  { useNativeDriver: true }
                 )}
+                scrollEventThrottle={16}
+                renderItem={({ item, index }) => {
+                  if ("key" in item) {
+                    return <View style={{width: SPACER_ITEM_Size}}/>
+                  }
+                  const inputRange = [
+                    (index - 2) * ITEM_Size,
+                    (index - 1) * ITEM_Size,
+                    index * ITEM_Size,
+                  ];
+                  const translateY = scrollValues[section.title]?scrollValues[section.title].interpolate({
+                    inputRange,
+                    outputRange: [0, -20, 0],
+                  }):0;
+
+                  return (
+                  <Animated.View style={[styles.flyerViewContainer, {transform:[{translateY}]}]}>
+                    <EventCard event={item} />
+                  </Animated.View>
+                );
+              }}
                 contentContainerStyle={styles.scrollContent}
               />
             )}
